@@ -1,4 +1,4 @@
-
+/*
 #include <iostream>
 #include <iomanip>
 #include <algorithm>
@@ -35,7 +35,7 @@ public:
             board[x] = new Player[s];
         }
     }
-    */
+    
     Game()
     {
         for (int i = 0; i < 3; i++)
@@ -63,7 +63,7 @@ public:
             }
         }
         cout << endl << "+-----------------+" << endl;
-        */
+        
         int loc = 0;
         system("CLS");
         cout << endl;
@@ -224,7 +224,7 @@ public:
         } while (fail);
 
         board[x][y] = Player::human;
-        */
+        
         int loc;
         do
         {   
@@ -311,3 +311,4 @@ int main()
     tictactoe.play();
     system("pause");
 }
+*/
