@@ -7,11 +7,12 @@ using namespace std;
 
 class Game
 {
+private:
     enum class Player
     {
         blank = ' ',
         person = '0',
-        algorithm = 'X'
+        computer = 'X'
     };
 
     struct Move
@@ -20,8 +21,6 @@ class Game
         int y = 0;
     };
     int size;
-    //static constexpr int size = 3; //Constexpr used to Make the expression constant on start. Don't know why the fuck normal ways don't work. Also, due to nest loops and recursion the code is slow af on 6 r&c.
-    //Player** board = new Player*[size];
     Player** board;
     int remMoves;
      
@@ -29,7 +28,7 @@ public:
     Game(int size = 3)
     {
         this->size = size;
-        remMoves = size * size;
+        this->remMoves = size * size;
         
         board = new Player*[size];
         for (int i = 0; i < size; i++)
@@ -50,9 +49,7 @@ public:
     {
         bool turn = true;
         bool breaker = false;
-
         printBoard();
-
         do
         {
             //Human Turn
@@ -60,7 +57,7 @@ public:
             {
                 getHumanMove();
                 remMoves--;
-                //Useless because Humans will never win.
+                //Useless because Humans will never win.(in theory)
                 if (checkWin(Player::person))
                 {
                     cout << "You win! \n"; //If they do win, sue me.
@@ -75,9 +72,9 @@ public:
 
                 cout << aimove.x << aimove.y << "\n";
 
-                board[aimove.x][aimove.y] = Player::algorithm;
+                board[aimove.x][aimove.y] = Player::computer;
                 remMoves--;
-                if (checkWin(Player::algorithm))
+                if (checkWin(Player::computer))
                 {
                     cout << "Computer Wins\n";
                     breaker = true;
@@ -90,13 +87,12 @@ public:
                 breaker = true;
             }
 
-            turn = false;
+            turn = (!turn);
             printBoard();
 
         } while (!breaker);
     }
 
-private:
     void printBoard()
     {
         system("CLS");
@@ -137,17 +133,6 @@ private:
                 cout << endl;
             }
         }
-        /*
-        for (int i = 0; i < coordinate; i++)
-        {
-            cout << "\n|";
-            for (unsigned j = 0; j < coordinate; j++)
-            {
-                cout << setw(3) << static_cast<char>(board[i][j]) << setw(3) << " |";
-            }
-        }
-        cout << "\n\n";
-        */
     }
 
     bool isTie()
@@ -199,7 +184,7 @@ private:
             {
                 if (board[i][j] == Player::blank)
                 {
-                    board[i][j] = Player::algorithm;
+                    board[i][j] = Player::computer;
                     remMoves--;
 
                     int temp = maxSearch(level, numeric_limits<int>::min(), numeric_limits<int>::max()); //Type Casting done to avoid problems with limits on int.
@@ -224,7 +209,7 @@ private:
     {
         if (checkWin(Player::person)) { return 10; }
 
-        else if (checkWin(Player::algorithm)) { return -10; }
+        else if (checkWin(Player::computer)) { return -10; }
 
         else if (isTie()) { return 0; }
 
@@ -257,7 +242,7 @@ private:
     {
         if (checkWin(Player::person)) { return 10; }
 
-        else if (checkWin(Player::algorithm)) { return -10; }
+        else if (checkWin(Player::computer)) { return -10; }
 
         else if (isTie()) { return 0; }
 
@@ -269,7 +254,7 @@ private:
             {
                 if (board[i][j] == Player::blank)
                 {
-                    board[i][j] = Player::algorithm;
+                    board[i][j] = Player::computer;
                     remMoves--;
 
                     score = min(score, maxSearch(level + 1, alpha, beta) + level);
