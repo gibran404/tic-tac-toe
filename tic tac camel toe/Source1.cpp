@@ -45,6 +45,7 @@ public:
                 board[i][j] = Player::none; //Initializes as '-' on the board
             }
         }
+        size = 3;
     }
   
 
@@ -63,7 +64,8 @@ public:
             }
         }
         cout << endl << "+-----------------+" << endl;
-        
+        */
+        /*
         int loc = 0;
         system("CLS");
         cout << endl;
@@ -89,6 +91,9 @@ public:
             if (x != 2)
                 cout << "  =====|=====|=====" << endl;
         }
+        
+        
+       
     }
 
     bool isTie()
@@ -311,4 +316,5 @@ int main()
     tictactoe.play();
     system("pause");
 }
+
 */

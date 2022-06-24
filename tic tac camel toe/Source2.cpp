@@ -19,44 +19,23 @@ class Game
         int x = 0;
         int y = 0;
     };
-
-    //static constexpr int size = 3; //Constexpr used to Make the expression constant on start. Don't know why the fuck normal ways don't work. Also, due to nest loops and recursion the code is slow af on 6 r&c.
-    Player** board;
-    int count;//no of moves left till board is filled
     int size;
-
+    //static constexpr int size = 3; //Constexpr used to Make the expression constant on start. Don't know why the fuck normal ways don't work. Also, due to nest loops and recursion the code is slow af on 6 r&c.
+    //Player** board = new Player*[size];
+    Player** board;
+    int remMoves;
+     
 public:
-    Game()//default constructor which makes the board of size 3 (3x3)
+    Game(int size = 3)
     {
-        size = 3;
-        count = 9;
-
-        board = new Player * [3];
-        for (int x = 0; x < 3; x++)
-        {
-            board[x] = new Player[3];
-        }
-
-
+        this->size = size;
+        remMoves = size * size;
+        
+        board = new Player*[size];
         for (int i = 0; i < size; i++)
         {
-            for (int j = 0; j < size; j++)
-            {
-                board[i][j] = Player::blank;
-            }
+            board[i] = new Player[size];
         }
-    }
-    Game(int s)
-    {
-        size = s;
-        count = s * s;
-
-        board = new Player * [s];
-        for (int x = 0; x < s; x++)
-        {
-            board[x] = new Player[s];
-        }
-
 
         for (int i = 0; i < size; i++)
         {
@@ -69,36 +48,35 @@ public:
 
     void play()
     {
-        int turn = 0;
+        bool turn = true;
         bool breaker = false;
 
         printBoard();
-        cout << "Enter your move by using your numpad." << endl;
 
         do
         {
             //Human Turn
-            if (turn % 2 == 0)
+            if (turn == true)
             {
                 getHumanMove();
-                count--;
+                remMoves--;
                 //Useless because Humans will never win.
                 if (checkWin(Player::person))
                 {
-                    cout << "This Code doesn't work." << endl; //If they do win, sue me.
+                    cout << "You win! \n"; //If they do win, sue me.
                     breaker = true;
                 }
             }
             else
             {
-                cout << endl << "Computer Move: ";
+                cout << "\nComputer Move: ";
 
                 Move aimove = minimax();
 
-                cout << aimove.x << aimove.y << endl;
+                cout << aimove.x << aimove.y << "\n";
 
                 board[aimove.x][aimove.y] = Player::algorithm;
-                count--;
+                remMoves--;
                 if (checkWin(Player::algorithm))
                 {
                     cout << "Computer Wins\n";
@@ -108,11 +86,11 @@ public:
 
             if (isTie())
             {
-                cout << endl << "*** Tie ***" << endl;
+                cout << "\n" << "* Tie *\n";
                 breaker = true;
             }
 
-            turn++;
+            turn = false;
             printBoard();
 
         } while (!breaker);
@@ -121,53 +99,60 @@ public:
 private:
     void printBoard()
     {
-        int loc = 0;
         system("CLS");
-        cout << endl;
-        if (size == 3)//for size 3
+        //loop for printing vertically line by line
+        for (int ver = 0; ver < size; ver++)
         {
-            for (int x = 0; x < 3; x++)
+            //vv set of loops that print each box of the board horizontally vv
+            for (int hor = 0; hor < size; hor++)
             {
-                cout << "       |     |     \n";
+                cout << "     ";
+                if (hor != size - 1)
+                    cout << "||";
+            }
+            cout << endl;
+            for (int hor = 0; hor < size; hor++)
+            {
+                cout << "  " << static_cast<char>(board[ver][hor]) << "  ";
+                if (hor != size - 1)
+                    cout << "||";
+            }
+            cout << endl;
+            for (int hor = 0; hor < size; hor++)
+            {
+                cout << "   " << ver << hor;
+                if (hor != size - 1)
+                    cout << "||";
+            }
+            cout << endl;
 
-                for (int y = 0; y < 3; y++)
+            if (ver != size - 1)
+            {
+                for (int hor = 0; hor < size; hor++)
                 {
-                    if (y == 0)
-                        cout << "  ";
-                    cout << "  " << static_cast<char>(board[x][y]);
-                    if (y == 2)
-                    {
-                        cout << endl;
-                    }
-                    else
-                        cout << "  |";
+                    cout << "=====";
+                    if (hor != size - 1)
+                        cout << "||";
                 }
-                cout << "      " << ++loc << "|    ";
-                cout << ++loc << "|   ";
-                cout << ++loc << endl;
-                if (x != 2)
-                    cout << "  =====|=====|=====" << endl;
+                cout << endl;
             }
         }
-        if (size > 3)
+        /*
+        for (int i = 0; i < coordinate; i++)
         {
-            for (int x = 0; x < size; x++)
+            cout << "\n|";
+            for (unsigned j = 0; j < coordinate; j++)
             {
-                for (int y = 0; y < size; y++)
-                {
-                    cout << "";
-                }
-                if(x !=size-1)
-                    cout << "======|";
+                cout << setw(3) << static_cast<char>(board[i][j]) << setw(3) << " |";
             }
-
         }
-        
+        cout << "\n\n";
+        */
     }
 
     bool isTie()
     {
-        return count == 0; //Basically if (Empty Tiles == 0) {return == true}
+        return remMoves == 0; //Basically if (Empty Tiles == 0) {return == true}
     }
 
     bool checkWin(Player player)
@@ -215,7 +200,7 @@ private:
                 if (board[i][j] == Player::blank)
                 {
                     board[i][j] = Player::algorithm;
-                    count--;
+                    remMoves--;
 
                     int temp = maxSearch(level, numeric_limits<int>::min(), numeric_limits<int>::max()); //Type Casting done to avoid problems with limits on int.
 
@@ -227,7 +212,7 @@ private:
                     }
 
                     board[i][j] = Player::blank;
-                    count++;
+                    remMoves++;
                 }
             }
         }
@@ -252,13 +237,13 @@ private:
                 if (board[i][j] == Player::blank)
                 {
                     board[i][j] = Player::person;
-                    count--; //Checks through the remaining blocks
+                    remMoves--; //Checks through the remaining blocks
 
                     score = max(score, minSearch(level + 1, alpha, beta) - level);
                     alpha = max(alpha, score);
 
                     board[i][j] = Player::blank;
-                    count++;
+                    remMoves++;
 
                     if (beta <= alpha) { return alpha; }
                 }
@@ -285,13 +270,13 @@ private:
                 if (board[i][j] == Player::blank)
                 {
                     board[i][j] = Player::algorithm;
-                    count--;
+                    remMoves--;
 
                     score = min(score, maxSearch(level + 1, alpha, beta) + level);
                     beta = min(beta, score);
 
                     board[i][j] = Player::blank;
-                    count++;
+                    remMoves++;
 
                     if (beta <= alpha) return beta;
                 }
@@ -301,73 +286,30 @@ private:
         return score;
     }
 
-    bool occupied(int x,int y)
+    void getHumanMove()
     {
-        return (board[x][y] != Player::blank);
-    }
+        bool fail = true;
+        unsigned x = -1, y = -1;
 
-    void getHumanMove()//this broke the game somehow
-    {
-        int loc = 0;
-        bool flag = false;
-        do//ensures the enetered location is not already filled
+        do
         {
-            do//ensures the input location is under the board size
-            {
-                cout << "Your Move: ";
-                cin >> loc;
-            } while (loc < 1 || loc > size * size);
+            cout << "Your Move: ";
 
+            char c;
+            cin >> c;
+            x = c - '0';
+            cin >> c;
+            y = c - '0';
 
-            int check = 1;
+            fail = board[x][y] != Player::blank;
 
-            for (int x = 0; x < size; x++)
-            {
-                for (int y = 0; y < size; y++)
-                {
-                    check++;
-                    if (check == loc)
-                    {
-                        if (!occupied(x, y))
-                        {
-                            board[x][y] = Player::person;
-                        }
-                        else
-                        {
-                            flag = true;
-                            x = size;
-                            y = size;
-                        }
-                            
-                    }
-                }
-            }
-        } while (flag == true);
-        /*
-        if (loc == 1)
-            board[0][0] = Player::person;
-        else if (loc == 2)
-            board[0][1] = Player::person;
-        else if (loc == 3)
-            board[0][2] = Player::person;
-        else if (loc == 4)
-            board[1][0] = Player::person;
-        else if (loc == 5)
-            board[1][1] = Player::person;
-        else if (loc == 6)
-            board[1][2] = Player::person;
-        else if (loc == 7)
-            board[2][0] = Player::person;
-        else if (loc == 8)
-            board[2][1] = Player::person;
-        else if (loc == 9)
-            board[2][2] = Player::person;
-        else
-        {
-            cout << "wrong input";
-            cin >> loc;
-        }
-        */
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+        } while (fail);
+
+        board[x][y] = Player::person;
+        remMoves--;
     }
 };
 
