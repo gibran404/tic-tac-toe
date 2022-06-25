@@ -1,4 +1,4 @@
-/*
+
 #include <iostream>
 #include <iomanip>
 #include <algorithm>
@@ -6,32 +6,32 @@
 
 using namespace std;
 
-class TicTac
+class Game
 {
     enum class Player
     {
         blank = ' ',
-        P1 = 'O',
+        P1 = '0',
         P2 = 'X'
     };
+
     struct Move
     {
         int x = 0;
         int y = 0;
     };
-    const int size = 3;
+
+    const int size = 3; //Constexpr used to Make the expression constant on start. Don't know why the fuck normal ways don't work. Also, due to nest loops and recursion the code is slow af on 6 r&c.
+    Player board[3][3];
+    int remMoves;
     int P1score;
     int P2score;
     int drawscore;
     bool DualPlayer;
-    Player board[3][3];//3 size by default
-    int remMoves;
+
 public:
-    TicTac()//dualplayer is assigned in cunstructor
+    Game() : remMoves(size* size)
     {
-        P1score = 0;
-        P2score = 0;
-        drawscore = 0;
         for (int i = 0; i < size; i++)
         {
             for (int j = 0; j < size; j++)
@@ -39,6 +39,9 @@ public:
                 board[i][j] = Player::blank;
             }
         }
+        P1score = 0;
+        P2score = 0;
+        drawscore = 0;
     }
     void Menu()
     {
@@ -49,7 +52,6 @@ public:
         do
         {
             cin >> choice;
-
             if (choice == 1)
                 DualPlayer = false;
             else if (choice == 2)
@@ -58,7 +60,6 @@ public:
                 cout << "Wrong input, enter again\n";
         } while (choice != 1 && choice != 2);
     }
-
     void play()
     {
         bool turn = 0;
@@ -118,7 +119,7 @@ public:
             if (isTie())
             {
                 drawscore++;
-                cout << "\n" << "* Tie *\n";        
+                cout << "\n" << "* Tie *\n";
                 cout << "Draws: " << drawscore << "\tP1 Win: " << P1score;
                 if (DualPlayer == true)
                     cout << "\tP2 Wins: ";
@@ -133,7 +134,6 @@ public:
 
         } while (!breaker);
     }
-
     void printBoard()
     {
         system("CLS");
@@ -176,14 +176,15 @@ public:
         }
     }
 
+
     bool isTie()
     {
-        return (remMoves == 0); //Basically if (Empty Tiles == 0) {return == true}
+        return remMoves == 0; //Basically if (Empty Tiles == 0) {return == true}
     }
 
     bool checkWin(Player player)
     {
-        //for column and rows checking
+        // check for row or column wins
         for (int i = 0; i < size; ++i)
         {
             bool rowwin = true;
@@ -206,12 +207,12 @@ public:
             return true;
 
         diagonalwin = true;
-
         for (int i = 0; i < size; ++i)
             diagonalwin &= board[size - i - 1][i] == player;
 
         return diagonalwin;
     }
+
 
     Move minimax()
     {
@@ -248,7 +249,6 @@ public:
 
     int maxSearch(int level, int alpha, int beta) //Alpha Beta Pruning to help with the Tree implementation.
     {
-        int rem = remMoves;
         if (checkWin(Player::P1)) { return 10; }
 
         else if (checkWin(Player::P2)) { return -10; }
@@ -264,13 +264,13 @@ public:
                 if (board[i][j] == Player::blank)
                 {
                     board[i][j] = Player::P1;
-                    rem--; //Checks through the remaining blocks
+                    remMoves--; //Checks through the remaining blocks
 
                     score = max(score, minSearch(level + 1, alpha, beta) - level);
                     alpha = max(alpha, score);
 
                     board[i][j] = Player::blank;
-                    rem++;
+                    remMoves++;
 
                     if (beta <= alpha) { return alpha; }
                 }
@@ -282,7 +282,6 @@ public:
 
     int minSearch(int level, int alpha, int beta)
     {
-        int rem = remMoves;
         if (checkWin(Player::P1)) { return 10; }
 
         else if (checkWin(Player::P2)) { return -10; }
@@ -298,21 +297,21 @@ public:
                 if (board[i][j] == Player::blank)
                 {
                     board[i][j] = Player::P2;
-                    rem--;
+                    remMoves--;
 
                     score = min(score, maxSearch(level + 1, alpha, beta) + level);
                     beta = min(beta, score);
 
                     board[i][j] = Player::blank;
-                    rem++;
+                    remMoves++;
 
                     if (beta <= alpha) return beta;
                 }
             }
         }
+
         return score;
     }
-
     void getHumanMove(Player player)
     {
         bool fail = true;
@@ -337,11 +336,10 @@ public:
         //remMoves--;
     }
 };
-  
+
 int main()
 {
-    TicTac tictactoe;
+    Game tictactoe;
     tictactoe.play();
     system("pause");
 }
-*/
