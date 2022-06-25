@@ -36,6 +36,7 @@ public:
         }
     }
     *
+
     Game()
     {
         for (int i = 0; i < 3; i++)
@@ -49,7 +50,7 @@ public:
     }
     void printBoard()
     {
-        
+        /*
         system("CLS");
         cout << "+-----------------+";
         for (int i = 0; i < 3; i++)
@@ -62,8 +63,8 @@ public:
             }
         }
         cout << endl << "+-----------------+" << endl;
-        
-        /*
+        *
+
         int loc = 0;
         system("CLS");
         cout << endl;
@@ -89,9 +90,6 @@ public:
             if (x != 2)
                 cout << "  =====|=====|=====" << endl;
         }
-        *
-        
-       
     }
 
     bool isTie()

@@ -131,7 +131,7 @@ public:
 
     void printBoard()
     {
-        system("CLS");
+        //system("CLS");
         //loop for printing vertically line by line
         for (int ver = 0; ver < size; ver++)
         {
@@ -173,15 +173,7 @@ public:
 
     bool isTie()
     {
-        return remMoves == 0; //Basically if (Empty Tiles == 0) {return == true}
-    }
-
-    bool occupied(int x, int y, Player player)
-    {
-        if (board[x][y] == player)
-            return true;
-        else
-            return false;
+        return (remMoves == 0); //Basically if (Empty Tiles == 0) {return == true}
     }
 
     bool checkWin(Player player)
