@@ -1,4 +1,4 @@
-
+/*
 #include <iostream>
 #include <iomanip>
 #include <algorithm>
@@ -6,7 +6,7 @@
 
 using namespace std;
 
-class DualPlayer
+class game
 {
 private:
     enum class Player
@@ -29,7 +29,7 @@ private:
     int remMoves;
 
 public:
-    DualPlayer()
+    game()
     {
         P1score = 0;
         P2score = 0;
@@ -311,7 +311,8 @@ public:
 
 int main()
 {
-    DualPlayer tictactoe;
+    game tictactoe;
     tictactoe.play();
     system("pause");
 }
+*/

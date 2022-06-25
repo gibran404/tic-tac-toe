@@ -8,38 +8,30 @@ using namespace std;
 
 class TicTac
 {
-
-};
-
-class DualPlayer
-{
-private:
     enum class Player
     {
         blank = ' ',
         P1 = 'O',
         P2 = 'X'
     };
-
     struct Move
     {
         int x = 0;
         int y = 0;
     };
+    int size;
     int P1score;
     int P2score;
     int drawscore;
-    int size;
-    Player board[3][3];
+    bool DualPlayer;
+    Player board[3][3];//3 size by default
     int remMoves;
-
 public:
-    DualPlayer()
+    TicTac()//dualplayer is assigned in cunstructor
     {
-        P1score = 0;
-        P2score = 0;
-        drawscore = 0;
         size = 3;
+        P1score = 0;
+        drawscore = 0;
         for (int i = 0; i < size; i++)
         {
             for (int j = 0; j < size; j++)
@@ -48,30 +40,57 @@ public:
             }
         }
     }
+    void Menu()
+    {
+        cout << "\t\tTIC TAC TOE GAME\n";
+        cout << "\n\t     Made by Hanan and Momin\n\n";
+        cout << "\n   Enter 1 for SinglePlayer and 2 for DualPlayer\n";
+        int choice;
+        do
+        {
+            cin >> choice;
+
+            if (choice == 1)
+                DualPlayer = false;
+            else if (choice == 2)
+                DualPlayer = true;
+            else
+                cout << "Wrong input, enter again\n";
+        } while (choice != 1 && choice != 2);
+    }
 
     void play()
     {
-        unsigned turn = 0;
+        bool turn = 0;
         bool breaker = false;
-
+        Menu();
         printBoard();
-
         do
         {
-            //Human Turn
             if (turn == 0)
             {
                 getHumanMove();
                 remMoves--;
-                //Useless because Humans will never win.
                 if (checkWin(Player::P1))
                 {
                     P1score++;
-                    cout << "You win! \n"; //If they do win, sue me.
+                    cout << "P1 wins! \n";
                     breaker = true;
                 }
             }
-            else
+            else if (DualPlayer == true)//runs for DualPlayer
+            {
+                getHumanMove();
+                remMoves--;
+                if (checkWin(Player::P2))
+                {
+                    P1score++;
+                    cout << "P2 wins! \n";
+                    cout << "Draws: " << drawscore << "\tP1 Wins: " << P1score << "\tP2 Wins: " << P2score;
+                    breaker = true;
+                }
+            }
+            else if (DualPlayer == false)//runs for SinglePlayer
             {
                 cout << "\nComputer Move: ";
 
@@ -85,6 +104,7 @@ public:
                 {
                     P2score++;
                     cout << "Computer Wins\n";
+                    cout << "Draws: " << drawscore << "\tP1 Wins: " << P1score << "\tComputer Wins: " << P2score;
                     breaker = true;
                 }
             }
@@ -92,11 +112,18 @@ public:
             if (isTie())
             {
                 drawscore++;
-                cout << "\n" << "* Tie *\n";
+                cout << "\n" << "* Tie *\n";        
+                cout << "Draws: " << drawscore << "\tP1 Win: " << P1score;
+                if (DualPlayer == true)
+                    cout << "\tP2 Wins: ";
+                else
+                    cout << "Computer Wins: ";
+
+                cout << P2score << endl;
                 breaker = true;
             }
 
-            turn ^= 1;
+            turn = !turn;
             printBoard();
 
         } while (!breaker);
@@ -224,6 +251,7 @@ public:
 
     int maxSearch(int level, int alpha, int beta) //Alpha Beta Pruning to help with the Tree implementation.
     {
+        int rem = remMoves;
         if (checkWin(Player::P1)) { return 10; }
 
         else if (checkWin(Player::P2)) { return -10; }
@@ -239,13 +267,13 @@ public:
                 if (board[i][j] == Player::blank)
                 {
                     board[i][j] = Player::P1;
-                    remMoves--; //Checks through the remaining blocks
+                    rem--; //Checks through the remaining blocks
 
                     score = max(score, minSearch(level + 1, alpha, beta) - level);
                     alpha = max(alpha, score);
 
                     board[i][j] = Player::blank;
-                    remMoves++;
+                    rem++;
 
                     if (beta <= alpha) { return alpha; }
                 }
@@ -257,6 +285,7 @@ public:
 
     int minSearch(int level, int alpha, int beta)
     {
+        int rem = remMoves;
         if (checkWin(Player::P1)) { return 10; }
 
         else if (checkWin(Player::P2)) { return -10; }
@@ -272,13 +301,13 @@ public:
                 if (board[i][j] == Player::blank)
                 {
                     board[i][j] = Player::P2;
-                    remMoves--;
+                    rem--;
 
                     score = min(score, maxSearch(level + 1, alpha, beta) + level);
                     beta = min(beta, score);
 
                     board[i][j] = Player::blank;
-                    remMoves++;
+                    rem++;
 
                     if (beta <= alpha) return beta;
                 }
@@ -310,13 +339,13 @@ public:
         } while (fail);
 
         board[x][y] = Player::P1;
-        remMoves--;
+        //remMoves--;
     }
 };
-
+  
 int main()
 {
-    DualPlayer tictactoe;
+    TicTac tictactoe;
     tictactoe.play();
     system("pause");
 }
