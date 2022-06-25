@@ -35,7 +35,7 @@ public:
             board[x] = new Player[s];
         }
     }
-    
+    *
     Game()
     {
         for (int i = 0; i < 3; i++)
@@ -47,11 +47,9 @@ public:
         }
         size = 3;
     }
-  
-
     void printBoard()
     {
-        /*
+        
         system("CLS");
         cout << "+-----------------+";
         for (int i = 0; i < 3; i++)
@@ -64,7 +62,7 @@ public:
             }
         }
         cout << endl << "+-----------------+" << endl;
-        */
+        
         /*
         int loc = 0;
         system("CLS");
@@ -91,7 +89,7 @@ public:
             if (x != 2)
                 cout << "  =====|=====|=====" << endl;
         }
-        
+        *
         
        
     }
@@ -229,7 +227,9 @@ public:
         } while (fail);
 
         board[x][y] = Player::human;
-        
+        *
+
+
         int loc;
         do
         {   
@@ -316,5 +316,6 @@ int main()
     tictactoe.play();
     system("pause");
 }
+
 
 */
