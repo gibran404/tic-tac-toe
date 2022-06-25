@@ -1,4 +1,4 @@
-/*
+
 #include <iostream>
 #include <iomanip>
 #include <algorithm>
@@ -6,12 +6,12 @@
 
 using namespace std;
 
-class Game
+class TicTac
 {
     enum class Player
     {
         blank = ' ',
-        P1 = '0',
+        P1 = 'O',
         P2 = 'X'
     };
 
@@ -21,8 +21,8 @@ class Game
         int y = 0;
     };
 
-    const int size = 3; //Constexpr used to Make the expression constant on start. Don't know why the fuck normal ways don't work. Also, due to nest loops and recursion the code is slow af on 6 r&c.
-    Player board[3][3];
+    const int size = 5; //Constexpr used to Make the expression constant on start. Don't know why the fuck normal ways don't work. Also, due to nest loops and recursion the code is slow af on 6 r&c.
+    Player board[5][5];
     int remMoves;
     int P1score;
     int P2score;
@@ -30,7 +30,7 @@ class Game
     bool DualPlayer;
 
 public:
-    Game() : remMoves(size* size)
+    TicTac() : remMoves(size* size)
     {
         for (int i = 0; i < size; i++)
         {
@@ -62,7 +62,7 @@ public:
     }
     void play()
     {
-        bool turn = 0;
+        bool turn = false;
         bool breaker = false;
         Menu();
         printBoard();
@@ -339,8 +339,7 @@ public:
 
 int main()
 {
-    Game tictactoe;
+    TicTac tictactoe;
     tictactoe.play();
     system("pause");
 }
-*/
