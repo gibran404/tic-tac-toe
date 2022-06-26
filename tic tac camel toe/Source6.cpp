@@ -21,8 +21,8 @@ class TicTac
         int y = 0;
     };
 
-    const int size = 5; //Constexpr used to Make the expression constant on start. Don't know why the fuck normal ways don't work. Also, due to nest loops and recursion the code is slow af on 6 r&c.
-    Player board[5][5];
+    const int size = 3; //Constexpr used to Make the expression constant on start. Don't know why the fuck normal ways don't work. Also, due to nest loops and recursion the code is slow af on 6 r&c.
+    Player board[3][3];
     int remMoves;
     int P1score;
     int P2score;
@@ -30,8 +30,9 @@ class TicTac
     bool DualPlayer;
 
 public:
-    TicTac() : remMoves(size* size)
+    TicTac()
     {
+        remMoves = size * size;
         for (int i = 0; i < size; i++)
         {
             for (int j = 0; j < size; j++)
@@ -43,28 +44,50 @@ public:
         P2score = 0;
         drawscore = 0;
     }
+    void reset()
+    {
+        remMoves = size * size;
+        for (int i = 0; i < size; i++)
+        {
+            for (int j = 0; j < size; j++)
+            {
+                board[i][j] = Player::blank;
+            }
+        }
+    }
     void Menu()
     {
+        cout << "\n\t  ****************************\n";
         cout << "\t\tTIC TAC TOE GAME\n";
-        cout << "\n\t     Made by Hanan and Momin\n\n";
-        cout << "\n   Enter 1 for SinglePlayer and 2 for DualPlayer\n";
-        int choice;
+        cout << "\t  ****************************\n";
+
+        cout << "\n\n\t     Made by Hanan and Momin\n\n";
+        cout << "\n\n\n   Enter 1 for SinglePlayer and 2 for DualPlayer\n";
+        int type;
         do
         {
-            cin >> choice;
-            if (choice == 1)
+            cin >> type;
+            if (type == 1)
                 DualPlayer = false;
-            else if (choice == 2)
+            else if (type == 2)
                 DualPlayer = true;
             else
                 cout << "Wrong input, enter again\n";
-        } while (choice != 1 && choice != 2);
+        } while (type != 1 && type != 2);
+
+        char choice = 'y';
+        do
+        {
+            play();
+            cout << "\n Playe again?(y/n) ";
+            cin >> choice;
+        } while (choice == 'y');
     }
     void play()
     {
         bool turn = false;
         bool breaker = false;
-        Menu();
+        reset();
         printBoard();
         do
         {
@@ -124,7 +147,7 @@ public:
                 if (DualPlayer == true)
                     cout << "\tP2 Wins: ";
                 else
-                    cout << "Computer Wins: ";
+                    cout << "\tComputer Wins: ";
 
                 cout << P2score << endl;
                 breaker = true;
@@ -340,6 +363,6 @@ public:
 int main()
 {
     TicTac tictactoe;
-    tictactoe.play();
+    tictactoe.Menu();
     system("pause");
 }
